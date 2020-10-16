@@ -16,6 +16,18 @@
                               <input type="text" name="name" value="{{ $product->name }}" class="form-control">
                         </div>
                         <div class="form-group">
+                              <label for="category">Select a Category</label>
+                              <select name="category_id" id="category" class="form-control">
+                                    @foreach($categories as $category)
+                                          <option value="{{ $category->id }}" 
+                                          @if($product->category->id == $category->id)
+                                                selected
+                                          @endif
+                                          >{{ $category->name }}</option>
+                                    @endforeach
+                              </select>
+                        </div>
+                        <div class="form-group">
                               <label for="image">Price</label>
                               <input type="number" name="price" value="{{ $product->price }}" class="form-control">
                         </div>

@@ -15,6 +15,14 @@
                               <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                         </div>
                         <div class="form-group">
+                              <label for="category">Select a Category</label>
+                              <select name="category_id" id="category" class="form-control">
+                                    @foreach($categories as $category)
+                                          <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                              </select>
+                        </div>
+                        <div class="form-group">
                               <label for="image">Price</label>
                               <input type="number" name="price" class="form-control" value="{{ old('price') }}">
                         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Session;
 use App\Product;
+use App\Category;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -30,7 +31,8 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $categories = Category::all();
+        return view('products.create')->with('categories', $categories);
     }
 
     /**
@@ -43,6 +45,7 @@ class ProductsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'category_id'=>'required',
             'description' => 'required',
             'price' => 'required',
             'image' => 'required|image'
@@ -57,6 +60,7 @@ class ProductsController extends Controller
         $product_image->move('uploads/products', $product_image_new_name);
 
         $product->name = $request->name;
+        $product->category_id =$request->category_id;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->image = 'uploads/products/' . $product_image_new_name;
@@ -88,7 +92,8 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        return view('products.edit', ['product' => Product::find($id) ]);
+
+        return view('products.edit', ['product' => Product::find($id),'categories'=> Category::all() ]);
     }
 
     /**
@@ -102,6 +107,7 @@ class ProductsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
+            'category_id'=>'required',
             'description' => 'required',
             'price' => 'required'
         ]);
@@ -122,6 +128,7 @@ class ProductsController extends Controller
         }
 
         $product->name = $request->name;
+        $product->category_id =$request->category_id;
         $product->description = $request->description;
         $product->price = $request->price;
         
