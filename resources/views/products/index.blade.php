@@ -29,10 +29,10 @@
                                           <td>{{ $product->name }}</td>
                                           <td>{{ $product->price }}</td>
                                           <td>
-                                                <a href="{{ route('products.edit', ['id' => $product->id ]) }}" class="btn btn-default btn-xs">Edit</a>
+                                                <a href="{{ route('products.edit',$product->id) }}" class="btn btn-default btn-xs">Edit</a>
                                           </td>
                                           <td>
-                                                <form action="{{ route('products.destroy', ['id' => $product->id ]) }}" method="post">
+                                                <form action="{{ route('products.destroy',$product->id) }}" method="post">
                                                       {{ csrf_field() }}
                                                       {{ method_field('DELETE') }}
                                                       <button class="btn btn-xs btn-danger">Delete</button>
