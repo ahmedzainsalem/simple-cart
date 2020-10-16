@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Session;
 use App\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\Categories\StoreCategoriesPostRequest;
+use App\Http\Requests\Categories\UpdateCategoriesPostRequest;
 
 class CategoriesController extends Controller
 {
@@ -39,16 +41,9 @@ class CategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoriesPostRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required'
-        ]);
-
-        $category = new Category;
-
-        $category->name = $request->name;
-        $category->save();
+        Category::create($request->all());
 
         Session::flash('success', 'You succesfully created a category.');
 
@@ -72,9 +67,8 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $category = Category::find($id);
+    public function edit(Category $category)
+    { 
 
         return view('categories.edit')->with('category', $category);
     }
@@ -86,17 +80,10 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCategoriesPostRequest $request, Category $category)
     {
-        $this->validate($request, [
-            'name' => 'required'
-        ]);
         
-        $category = Category::find($id);
-
-        $category->name = $request->name;
-
-        $category->save();
+        $category->update($request->all());
 
         Session::flash('success', 'You succesfully updated the category.');
 
@@ -109,10 +96,9 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        $category = Category::find($id);
-
+         
         foreach($category->products as $product){
             $product->forceDelete();
         }
