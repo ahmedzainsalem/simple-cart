@@ -44,7 +44,9 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         <li><a href="{{ route('products.index') }}">Products</a></li>
-                        <li><a href="{{ route('products.create') }}">New Products</a></li>
+                        <li><a href="{{ route('products.create') }}">New Product</a></li>
+                        <li><a href="{{ route('categories.index') }}">Categories</a></li>
+                        <li><a href="{{ route('categories.create') }}">New Category</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
