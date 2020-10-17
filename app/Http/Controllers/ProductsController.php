@@ -6,6 +6,8 @@ use Session;
 use App\Product;
 use App\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\Products\StoreProductsPostRequest;
+use App\Http\Requests\Products\UpdateProductsPostRequest;
 
 class ProductsController extends Controller
 {
@@ -42,31 +44,17 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductsPostRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'category_id'=>'required',
-            'description' => 'required',
-            'price' => 'required',
-            'image' => 'required|image'
-        ]);
-
-        $product = new Product;
-
         $product_image = $request->image;
 
+        $product = $request->except('image');
+
         $product_image_new_name = time() . $product_image->getClientOriginalName();
-
         $product_image->move('uploads/products', $product_image_new_name);
-
-        $product->name = $request->name;
-        $product->category_id =$request->category_id;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->image = 'uploads/products/' . $product_image_new_name;
-
-        $product->save();
+        $product['image'] = 'uploads/products/' . $product_image_new_name;
+        
+        Product::create($product); 
 
         Session::flash('success', 'Product created.');
 
@@ -91,10 +79,10 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-
-        return view('products.edit', ['product' => Product::find($id),'categories'=> Category::all() ]);
+        $categories = Category::all();
+        return view('products.edit', compact('categories','product'));
     }
 
     /**
@@ -104,16 +92,10 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductsPostRequest $request, Product $product)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'category_id'=>'required',
-            'description' => 'required',
-            'price' => 'required'
-        ]);
         
-        $product = Product::find($id);
+        $postdata = $request->except('image');
 
         if($request->hasFile('image'))
         {
@@ -123,18 +105,11 @@ class ProductsController extends Controller
 
             $product_image->move('uploads/products', $product_image_new_name);
 
-            $product->image = 'uploads/products/' . $product_image_new_name;
+            $postdata['image'] = 'uploads/products/' . $product_image_new_name;
 
-            $product->save();
         }
 
-        $product->name = $request->name;
-        $product->category_id =$request->category_id;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        
-
-        $product->save();
+        $product->update($postdata);
 
         Session::flash('success', 'Product updated.');
 
@@ -147,10 +122,9 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        $product = Product::find($id);
-        
+         
         if(file_exists($product->image))
         {
             unlink($product->image);
