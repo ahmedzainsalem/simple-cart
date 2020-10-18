@@ -37,8 +37,11 @@
     <div class="container">
 
         <div class="header-content-wrapper">
-        <a href="{{ URL::to('/') }}" >
+            <a href="{{ URL::to('/') }}" >
                         Home
+             </a>
+             <a href="{{ URL::to('/products') }}" >
+                        New Products
                     </a>
             <ul class="nav-add">
                 
