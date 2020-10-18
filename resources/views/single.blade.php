@@ -27,7 +27,7 @@
                               <p class="product-details-info-text">{{ $product->description }}
                               </p>
 
-                              <form action="" method="post">
+                              <form action="{{ route('cart.add') }}" method="post">
                                     {{ csrf_field() }}
                                     <div class="quantity">
                                           <a href="#" class="quantity-minus quantity-minus-d">-</a>
