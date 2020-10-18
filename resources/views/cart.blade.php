@@ -32,9 +32,9 @@
                                           <tr class="cart_item">
 
                                                 <td class="product-remove">
-                                                       
+                                                      <a href="{{ route('cart.delete', ['id' => $pdt->rowId ]) }}" class="product-del remove" title="Remove this item">
                                                       <i class="seoicon-delete-bold"></i>
-                                                       
+                                                      </a>
                                                 </td>
 
                                                 <td class="product-thumbnail">
@@ -56,9 +56,9 @@
                                                 <td class="product-quantity">
 
                                                       <div class="quantity">
-                                                       -
+                                                      <a href="{{ route('cart.decr', ['id' => $pdt->rowId, 'qty' => $pdt->qty ]) }}" class="quantity-minus">-</a>
                                                             <input title="Qty" class="email input-text text" type="text" value="{{ $pdt->qty }}" placeholder="1" readonly>
-                                                       +
+                                                      <a href="{{ route('cart.incr', ['id' => $pdt->rowId, 'qty' => $pdt->qty ]) }}" class="quantity-plus">+</a>
                                                       </div>
 
                                                 </td>
@@ -100,10 +100,10 @@
                               <div class="cart-total">
                                     <h3 class="cart-total-title">Cart Totals</h3>
                                     <h5 class="cart-total-total">Total: <span class="price">${{ Cart::total() }}</span></h5>
-                                     
+                                    <a href="{{ route('cart.checkout') }}" class="btn btn-medium btn--light-green btn-hover-shadow">
                                     <span class="text">Checkout</span>
                                     <span class="semicircle"></span>
-                                    
+                                    </a>
                               </div>
 
                         </div>
