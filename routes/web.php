@@ -28,7 +28,11 @@ Route::post('/cart/add', [
     'as' => 'cart.add'
 ]);
 
-
+Route::get('/cart', [
+    'uses' => 'ShoppingController@cart',
+    'as' => 'cart'
+]);
+    
 
 Route::resource('products', 'ProductsController');
 Route::resource('categories', 'CategoriesController');
