@@ -37,10 +37,13 @@
     <div class="container">
 
         <div class="header-content-wrapper">
-
+        <a href="{{ URL::to('/') }}" >
+                        Home
+                    </a>
             <ul class="nav-add">
+                
                 <li class="cart">
-
+                    
                     <a href="#" class="js-cart-animate">
                         <i class="seoicon-basket"></i>
                         <span class="cart-count">{{ Cart::content()->count() }}</span>
