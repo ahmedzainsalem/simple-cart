@@ -18,6 +18,11 @@ Route::get('/', [
     'as' => 'index'
 ]);
 
+Route::get('/product/{id}', [
+    'uses' => 'FrontEndController@singleProduct',
+    'as' => 'product.single'
+]);
+
 Route::resource('products', 'ProductsController');
 Route::resource('categories', 'CategoriesController');
 
