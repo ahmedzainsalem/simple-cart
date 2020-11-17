@@ -8,14 +8,16 @@
             <div class="panel-heading">
                   Update category: {{ $category->name }}
             </div>
-
+           
             <div class="panel-body">
                   <form action="{{ route('categories.update', $category->id) }}" method="post">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
+                        <input type="hidden" name="id" value="{{ $category->id }}">
                         <div class="form-group">
                               <label for="name">Name</label>
-                              <input type="text" name="name" value="{{ $category->name }}" class="form-control">
+                              <input type="text" name="name" value="{{ $category->name }}" class="form-control @error('name') is-invalid @enderror">
+                              @error('name') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <div class="text-center">

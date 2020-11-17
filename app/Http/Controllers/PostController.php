@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Contracts\CategoryContract;
 use App\Http\Controllers\BaseController;
 
-class CategoriesController extends BaseController
+class CategoryController extends BaseController
 {
     /**
      * @var CategoryContract
@@ -14,7 +14,7 @@ class CategoriesController extends BaseController
     protected $categoryRepository;
 
     /**
-     * CategoriesController constructor.
+     * CategoryController constructor.
      * @param CategoryContract $CategoryRepository
      */
     public function __construct(CategoryContract $categoryRepository)
@@ -50,7 +50,8 @@ class CategoriesController extends BaseController
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'      =>  'required|max:191'
+            'name'      =>  'required|max:191',
+            'image'     =>  'mimes:jpg,jpeg,png|max:1000'
         ]);
 
         $params = $request->except('_token');
@@ -72,7 +73,7 @@ class CategoriesController extends BaseController
         $category = $this->categoryRepository->findCategoryById($id);
 
         $this->setPageTitle('category', 'Edit category : '.$category->name);
-        return view('categories.edit', compact('category'));
+        return view('categories.edit', compact('Category'));
     }
 
     /**
@@ -83,7 +84,8 @@ class CategoriesController extends BaseController
     public function update(Request $request)
     {
         $this->validate($request, [
-            'name'      =>  'required|max:191'
+            'name'      =>  'required|max:191',
+            'image'     =>  'mimes:jpg,jpeg,png|max:1000'
         ]);
 
         $params = $request->except('_token');
@@ -100,13 +102,13 @@ class CategoriesController extends BaseController
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function delete($id)
     {
         $category = $this->categoryRepository->deleteCategory($id);
 
         if (!$category) {
             return $this->responseRedirectBack('Error occurred while deleting Category.', 'error', true, true);
         }
-        return $this->responseRedirect('categories.index', 'Category deleted successfully' ,'success',false, false);
+        return $this->responseRedirect('Categorys.index', 'Category deleted successfully' ,'success',false, false);
     }
 }

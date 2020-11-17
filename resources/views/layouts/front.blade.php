@@ -37,7 +37,7 @@
     <div class="container">
 
         <div class="header-content-wrapper">
-            <a href="{{ URL::to('/') }}" >
+            <a href="{{ URL::to('/') }}" style="color:#4cc2c0;">
                         Home
              </a>
              <a href="{{ URL::to('/products') }}" >

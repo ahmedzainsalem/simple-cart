@@ -54,7 +54,7 @@
                         <tfoot >
                                 <tr>
                                     <td colspan="6">
-                                        {{$categories->links()}}
+                                        
                                     </td>
                                 </tr>
                                 </tfoot>
