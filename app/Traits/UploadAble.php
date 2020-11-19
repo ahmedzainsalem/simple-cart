@@ -34,7 +34,7 @@ trait UploadAble
      * @param string $disk
      */
     public function deleteOne($path = null, $disk = 'public')
-    {
+    {  
         Storage::disk($disk)->delete($path);
     }
 }

@@ -75,4 +75,18 @@ class ProductsController extends BaseController
         }
         return $this->responseRedirect('products.index', 'Product updated successfully' ,'success',false, false);
     }
+
+     /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        $product = $this->productRepository->deleteProduct($id);
+
+        if (!$product) {
+            return $this->responseRedirectBack('Error occurred while deleting Product.', 'error', true, true);
+        }
+        return $this->responseRedirect('products.index', 'Product deleted successfully' ,'success',false, false);
+    }
 }

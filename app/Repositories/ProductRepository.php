@@ -68,11 +68,11 @@ class ProductRepository extends BaseRepository implements ProductContract
 
             $image = null; 
             $product_image = $params['image'];
-            $filename = time() . $product_image->getClientOriginalName();    
-            if ($collection->has('image') && ($params['image'] instanceof  UploadedFile)) {
-                $image = $this->uploadOne($params['image'], 'uploads/products','public',$filename);
-            }
-
+              
+            $product_image_new_name = time() . $product_image->getClientOriginalName();
+            $product_image->move('uploads/products', $product_image_new_name);
+            $image = 'uploads/products/' . $product_image_new_name;
+            
             $merge = $collection->merge(compact('image'));
 
             $product = new Product($merge->all());
@@ -95,14 +95,22 @@ class ProductRepository extends BaseRepository implements ProductContract
         $product = $this->findProductById($params['id']);
 
         $collection = collect($params)->except('_token');
+ 
+        if($collection->has('image') && $params['image'])
+        {
+        
+            $product_image = $params['image'];
 
-        if ($collection->has('image') && ($params['image'] instanceof  UploadedFile)) {
+            $product_image_new_name = time() . $product_image->getClientOriginalName();
 
-            if ($product->image != null) {
-                $this->deleteOne($product->image);
-            }
+            $product_image->move('uploads/products', $product_image_new_name);
 
-            $image = $this->uploadOne($params['image'], 'uploads/products');
+            $image = 'uploads/products/' . $product_image_new_name;
+
+            unlink($product->image);
+
+        }else{
+            $image =$params['image_old'];
         }
 
         $merge = $collection->merge(compact('image'));
@@ -121,7 +129,7 @@ class ProductRepository extends BaseRepository implements ProductContract
         $product = $this->findProductById($id);
 
         if ($product->image != null) {
-            $this->deleteOne($product->image);
+            unlink($product->image);
         }
 
         $product->delete();

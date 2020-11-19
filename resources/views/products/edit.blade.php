@@ -8,7 +8,7 @@
                 <div class="panel-heading">Update category: {{ $product->name }}</div>
 
                 <div class="panel-body">
-                    <form action="{{ route('products.update', $product->id) }}" method="post">
+                    <form action="{{ route('products.update', $product->id) }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
                         <input type="hidden" name="id" value="{{ $product->id }}">
@@ -39,6 +39,7 @@
                         <div class="form-group">
                               <label for="image">Image</label>
                               <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
+                              <input type="hidden" name="image_old" value="{{ $product->image }}" >
                               @error('name') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
