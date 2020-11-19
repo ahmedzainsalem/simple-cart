@@ -2,138 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use Session;
 use App\Product;
 use App\Category;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
+use App\Contracts\CategoryContract;
+use App\Contracts\ProductContract;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Products\StoreProductsPostRequest;
 use App\Http\Requests\Products\UpdateProductsPostRequest;
 
-class ProductsController extends Controller
+class ProductsController extends BaseController
 {
+   
+    protected $categoryRepository;
+    protected $productRepository;
 
-    public function __construct()
+    public function __construct( 
+        CategoryContract $categoryRepository,
+        ProductContract $productRepository
+    )
     {
         $this->middleware('auth');
+        $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        $products=Product::orderBy('id', 'desc')->paginate(10);
-        return view('products.index',compact('products')); 
+        $products = $this->productRepository->listProducts();
+
+        $this->setPageTitle('Products', 'Products List');
+        return view('products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $categories = Category::all();
-        return view('products.create')->with('categories', $categories);
+         
+        $categories = $this->categoryRepository->listCategories('name', 'asc');
+
+        $this->setPageTitle('Products', 'Create Product');
+        return view('products.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreProductsPostRequest $request)
     {
-        $product_image = $request->image;
+        $params = $request->except('_token');
 
-        $product = $request->except('image');
+        $product = $this->productRepository->createProduct($params);
 
-        $product_image_new_name = time() . $product_image->getClientOriginalName();
-        $product_image->move('uploads/products', $product_image_new_name);
-        $product['image'] = 'uploads/products/' . $product_image_new_name;
-        
-        Product::create($product); 
-
-        Session::flash('success', 'Product created.');
-
-        return redirect()->route('products.index');
-
+        if (!$product) {
+            return $this->responseRedirectBack('Error occurred while creating product.', 'error', true, true);
+        }
+        return $this->responseRedirect('products.index', 'Product added successfully' ,'success',false, false);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Product $product)
-    {
-        $categories = Category::all();
-        return view('products.edit', compact('categories','product'));
+    { 
+        $categories = $this->categoryRepository->listCategories('name', 'asc');
+
+        $this->setPageTitle('Products', 'Edit Product');
+        return view('products.edit', compact('categories', 'product'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateProductsPostRequest $request, Product $product)
+    public function update(UpdateProductsPostRequest $request,Product $product)
     {
-        
-        $postdata = $request->except('image');
+        $params = $request->except('_token');
 
-        if($request->hasFile('image'))
-        {
-            $product_image = $request->image;
+        $product = $this->productRepository->updateProduct($params);
 
-            $product_image_new_name = time() . $product_image->getClientOriginalName();
-
-            $product_image->move('uploads/products', $product_image_new_name);
-
-            $postdata['image'] = 'uploads/products/' . $product_image_new_name;
-
+        if (!$product) {
+            return $this->responseRedirectBack('Error occurred while updating product.', 'error', true, true);
         }
-
-        $product->update($postdata);
-
-        Session::flash('success', 'Product updated.');
-
-        return redirect()->route('products.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
-         
-        if(file_exists($product->image))
-        {
-            unlink($product->image);
-        }
-
-        $product->delete();
-
-        Session::flash('success', 'Product deleted.');
-
-        return redirect()->back();
+        return $this->responseRedirect('products.index', 'Product updated successfully' ,'success',false, false);
     }
 }

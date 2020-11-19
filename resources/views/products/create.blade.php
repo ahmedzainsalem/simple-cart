@@ -12,27 +12,32 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                               <label for="name">Name</label>
-                              <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                              <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                              @error('name') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <label for="category">Select a Category</label>
-                              <select name="category_id" id="category" class="form-control">
+                              <select name="category_id" id="category" class="form-control @error('category_id') is-invalid @enderror">
                                     @foreach($categories as $category)
                                           <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                               </select>
+                              @error('category_id') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <label for="image">Price</label>
-                              <input type="number" name="price" class="form-control" value="{{ old('price') }}">
+                              <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}">
+                              @error('price') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <label for="image">Image</label>
-                              <input type="file" name="image" class="form-control">
+                              <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
+                              @error('image') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <label for="description">Description</label>
-                              <textarea name="description" id="description" cols="30" rows="10" class="form-control">{{ old('description') }}</textarea>
+                              <textarea name="description" id="description" cols="30" rows="10" class="form-control @error('description') {{ $message }} @enderror">{{ old('description') }}</textarea>
+                              @error('description') {{ $message }} @enderror
                         </div>
                         <div class="form-group">
                               <button class="form-control btn btn-success">Save Product</button>

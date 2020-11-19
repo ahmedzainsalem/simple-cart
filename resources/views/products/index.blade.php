@@ -44,7 +44,7 @@
                         <tfoot >
                                 <tr>
                                     <td colspan="6">
-                                        {{$products->links()}}
+                                       
                                     </td>
                                 </tr>
                                 </tfoot>

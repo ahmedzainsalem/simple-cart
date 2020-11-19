@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use Illuminate\Http\Request;
 use App\Contracts\CategoryContract;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Categories\StoreCategoriesPostRequest;
+use App\Http\Requests\Categories\UpdateCategoriesPostRequest;
 
 class CategoriesController extends BaseController
 {
@@ -19,6 +22,7 @@ class CategoriesController extends BaseController
      */
     public function __construct(CategoryContract $categoryRepository)
     {
+        $this->middleware('auth');
         $this->categoryRepository = $categoryRepository;
     }
 
@@ -47,11 +51,8 @@ class CategoriesController extends BaseController
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name'      =>  'required|max:191'
-        ]);
+    public function store(StoreCategoriesPostRequest $request)
+    { 
 
         $params = $request->except('_token');
 
@@ -67,10 +68,8 @@ class CategoriesController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
-    {
-        $category = $this->categoryRepository->findCategoryById($id);
-
+    public function edit(Category $category)
+    { 
         $this->setPageTitle('category', 'Edit category : '.$category->name);
         return view('categories.edit', compact('category'));
     }
@@ -80,12 +79,8 @@ class CategoriesController extends BaseController
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request)
-    {
-        $this->validate($request, [
-            'name'      =>  'required|max:191'
-        ]);
-
+    public function update(UpdateCategoriesPostRequest $request,Category $category)
+    { 
         $params = $request->except('_token');
 
         $category = $this->categoryRepository->updateCategory($params);
